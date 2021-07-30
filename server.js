@@ -23,7 +23,9 @@ const db = knex({
 
 const PORT = process.env.DATABASE_URL
 
-app.get('/', (req, res)=> {res.send(database.users);});
+app.get('/', (req, res)=> {
+    console.log()
+    res.send(database.users);});
 
 app.post('/signin', (req, res) => {handleSignin(req, res, db, bcrypt)})
 
