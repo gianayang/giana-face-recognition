@@ -21,7 +21,7 @@ const db = knex({
     }
 });
 
-const PORT = process.env.DATABASE_URL
+
 
 app.get('/', (req, res)=> {
     console.log()
@@ -37,7 +37,7 @@ app.put('/image', (req, res) => {handleImage(req, res, db)})
 
 app.post('/imageurl', (req, res) => {handleApiCall(req, res)})
 
-app.listen(3000, ()=> {console.log(`app is running on port ${DATABASE_URL}` );})
+app.listen(process.env.PORT || 3000, ()=> {console.log(`app is running on port ${process.env.PORT}` );})
 
 /*
 / --> res = this is working 
