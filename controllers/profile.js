@@ -1,0 +1,14 @@
+const handleProfile = (req, res, db, bcrypt) => {
+    const {id} = req.params;
+    db.select('*').from('users').where('id', id)
+    .then(user =>{
+        if (user.length){
+            res.json(user[0]);
+        } else {
+            res.status(400).json('Not found')
+        }
+        
+    })
+}
+
+export {handleProfile};
