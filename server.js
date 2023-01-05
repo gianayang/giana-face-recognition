@@ -15,7 +15,7 @@ let hash = '';
 const db = knex({
     client: 'pg',
     connection: {
-        host: '127.0.0.1',
+        host: 'postgresql-curly-68080',
         user:'',
         password: '',
         database: 'smart-brain'
