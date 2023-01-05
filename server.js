@@ -10,8 +10,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-let hash = '';
-
+process.env.NODE_TLS_REJECT_UNAUTHROIZED = 0;
 const db = knex({
     client: 'pg',
     connection: {
