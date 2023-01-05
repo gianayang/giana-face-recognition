@@ -23,7 +23,7 @@ const db = knex({
 });
 
 app.get('/', (req, res)=> {
-    res.send(database.users);
+    res.send('This is working');
 })
 /**
  * /signin -> POST =  success/fail
