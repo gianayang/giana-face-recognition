@@ -15,10 +15,8 @@ let hash = '';
 const db = knex({
     client: 'pg',
     connection: {
-        host: 'postgresql-curly-68080',
-        user:'',
-        password: '',
-        database: 'smart-brain'
+        host: process.env.DATABASE_URL,
+        ssl: false,
     }
 });
 
