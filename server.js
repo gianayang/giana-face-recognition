@@ -10,7 +10,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-process.env.NODE_TLS_REJECT_UNAUTHROIZED = 0;
 const db = knex({
     client: 'pg',
     connection: {
@@ -31,7 +30,9 @@ app.get('/', (req, res)=> {
  * /image -> POST/PUT -> user
  */
 
-app.post('/signin', (req, res) => {handleSignin(req, res, db, bcrypt)})
+console.log("before signin")
+app.post('/signin',(req, res) => {
+    handleSignin(req, res, db, bcrypt)})
 
 app.post('/register', (req, res) => {handleRegister(req, res, db, bcrypt)})
 
@@ -58,6 +59,9 @@ app.put('/image', (req, res) => {
     .catch(err=> res.status(400).json('unable to get image entries'))
 })
 
-app.listen(process.env.PORT || 3000, () => {
+// app.listen(process.env.PORT || 3000, () => {
+//     console.log(`app is running on port ${process.env.PORT}`);
+// })
+app.listen(3000, () => {
     console.log(`app is running on port ${process.env.PORT}`);
 })
