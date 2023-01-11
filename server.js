@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
 import cors from 'cors';
-import {Client} from 'pg';
+import pkg from 'pg';
 import {handleRegister} from './controllers/register.js';
 import {handleSignin} from './controllers/signin.js';
 
@@ -19,6 +19,8 @@ app.use(cors());
 //         }
 //     }
 // });
+const {Client} = pkg;
+
 const db = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl:{
