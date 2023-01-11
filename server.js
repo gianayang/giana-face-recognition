@@ -40,30 +40,29 @@ app.post('/register', (req, res) => {handleRegister(req, res, db, bcrypt)})
 
 app.get('/profile/:id', (req, res) => {
     const { id } = req.params;
-    db.select('*').from('users').where({id})
-    .then(user => {
+    const selectIDQuery = {
+        text: 'SELECT * FROM users WHERE id = $1',
+        values: [id],
+    }
+    db.query(selectIDQuery, (err, user)=> {
+        if (err) res.status(400).json('user not found')
         if (user.length) {
-            res.json(user[0])
+            res.json(user.rows[0])
         } else {
             res.status(400).json('user not found')
         }
-    }).catch(err => res.status(400).json('user not found'))
+    })
 })
 
 app.put('/image', (req, res) => {
     const {id} = req.body;
-    db('users').where('id', '=', id)
-    .increment('entries', 1)
-    .returning('entries')
-    .then(entries => {
+    incrementQuery = 'UPDATE users SET entries = entries + 1 WHERE id = $1 RETURNING entries'
+    db.query(incrementQuery, (err, entries) => {
+        if (err) res.status(400).json("cannot update entries")
         res.json(entries[0].entries)
     })
-    .catch(err=> res.status(400).json('unable to get image entries'))
 })
 
 app.listen(process.env.PORT ||3000 , () => {
     console.log(`app is running on port ${process.env.PORT}`);
 })
-// app.listen(3000 , () => {
-//     console.log(`app is running on port ${process.env.PORT}`);
-// })
