@@ -17,7 +17,6 @@ const handleSignin = (req, res, db, bcrypt)=> {
     db.query(query1, (err, data) => {
         if (err) throw err;
         const isValid = bcrypt.compareSync(password, data.rows[0].hash);
-        res.json(user[0])
         if (isValid) {
             return db.query(query2, (err, user) => {
                 if (err) throw err;
