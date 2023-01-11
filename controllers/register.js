@@ -1,5 +1,7 @@
 import { query } from "express";
-import { Pool } from "pg";
+import pkg from "pg";
+
+const {Pool} = pkg;
 
 const pool = new Pool()
 
