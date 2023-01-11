@@ -6,7 +6,8 @@ const handleSignin = (req, res, db, bcrypt)=> {
     console.log(email, password);
     db.select('email','hash').from('login')
     .where('email', '=', email)
-    .then(data => {
+    db.query(`SELECT email, hash FROM login WHERE email = ${email};`, (err, data) => {
+        if (err) throw err;
         const isValid = bcrypt.compareSync(password, data[0].hash);
         res.json(user[0])
         if (isValid) {
@@ -17,10 +18,9 @@ const handleSignin = (req, res, db, bcrypt)=> {
             })
             .catch(err => res.status(400).json('unable to get user'))
         }else {
-            res.status(400).json(data[0].hash, password)
+            res.status(400).json(data[0].hash)
         }
-    })
-    .catch(err => res.status(400).json("something is wrong wtih database connection"))
+    });
 }
 
 export {handleSignin};
