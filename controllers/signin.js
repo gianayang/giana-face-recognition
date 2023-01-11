@@ -7,17 +7,17 @@ const handleSignin = (req, res, db, bcrypt)=> {
     db.select('email','hash').from('login')
     .where('email', '=', email)
     .then(data => {
-        console.log(data, "password", data[0]);
-        const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+        const isValid = bcrypt.compareSync(password, data[0].hash);
+        res.json(user[0])
         if (isValid) {
             return db.select('*').from('users')
-            .where('email', '=', req.body.email)
+            .where('email', '=', email)
             .then(user => {
                 res.json(user[0])
             })
             .catch(err => res.status(400).json('unable to get user'))
         }else {
-            res.status(400).json("wrong credentials")
+            res.status(400).json(data[0].hash, password)
         }
     })
     .catch(err => res.status(400).json("something is wrong wtih database connection"))
