@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
 import cors from 'cors';
-import { Client } from 'pg';
+import {Client} from 'pg';
 import {handleRegister} from './controllers/register.js';
 import {handleSignin} from './controllers/signin.js';
 
