@@ -10,15 +10,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-// const db = knex({
-//     client: 'pg',
-//     connection: {
-//         connectionString: process.env.DATABASE_URL,
-//         ssl: {
-//             rejectUnauthorized: false
-//         }
-//     }
-// });
 const {Client} = pkg;
 
 const db = new Client({
@@ -56,7 +47,10 @@ app.get('/profile/:id', (req, res) => {
 
 app.put('/image', (req, res) => {
     const {id} = req.body;
-    incrementQuery = 'UPDATE users SET entries = entries + 1 WHERE id = $1 RETURNING entries'
+    incrementQuery = {
+        text: 'UPDATE users SET entries = entries + 1 WHERE id = $1 RETURNING entries',
+        values: [id]
+    }
     db.query(incrementQuery, (err, entries) => {
         if (err) res.status(400).json("cannot update entries")
         res.json(entries[0].entries)
