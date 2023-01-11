@@ -1,4 +1,7 @@
 import { query } from "express";
+import { Pool } from "pg";
+
+const pool = new Pool()
 
 const handleRegister = async (req, res, db, bcrypt) => {
     const {email, name, password} = req.body;
@@ -7,21 +10,38 @@ const handleRegister = async (req, res, db, bcrypt) => {
     if(!email || !name || !password){
         return res.status(400).json('incorrect form submission')
     }
-    try{
+    const shouldAbort = (err) =>{
+        db.query('ROLLBACK', (err) => {
+            if (err) {
+                res.status(400).json("cannot register because ",err)
+            }
+        })
+        return !!err
+    }
+
+    db.query('BEGIN', (err) => {
+        if (shouldAbort(err)) return 
         const hash = bcrypt.hashSync(password);
         const query1 = 'INSERT INTO login(hash, email) VALUES($1, $2) RETURNING email'
-        const res = await db.query(query1,[hash, email])
+        db.query(query1,[hash, email], (err, data) => {
+            if (shouldAbort(err)) return
 
-        const insertINTOusers = 'INSERT INTO users(email, name, joined) VALUES($1, $2, $3)'
-        const values = [res.rows[0].email, name, new Date()]
-        await db.query(insertINTOusers, values, (err, user) => {
-            res.json(user.rows[0]);
+            const insertINTOusers = 'INSERT INTO users(email, name, joined) VALUES($1, $2, $3)'
+            const values = [data.rows[0].email, name, new Date()]
+            db.query(insertINTOusers, values, (err, user) => {
+                if (shouldAbort(err)) return
+
+                res.json(data.rows[0])
+                db.query('COMMIT', (err) => {
+                    if (err) {
+                        res.status(400).json("cannot register because ",err)
+                    }
+                })
+            })
+            
         })
-        await db.query('COMMIT')
-    }catch (e) {
-        await db.query('ROLLBACK')
-        throw e
-    }
+    })
+
     // db.transaction(trx => {
     //     trx.insert({
     //         hash: hash,
