@@ -22,9 +22,12 @@ const handleRegister = async (req, res, db, bcrypt) => {
 
         const insertINTOusers = 'INSERT INTO users(email, name, joined) VALUES($1, $2, $3)'
         const values = [data.rows[0].email, name, new Date()]
-        const user = await db.query(insertINTOusers, values)
-
-        res.json(user.rows[0])
+        await db.query(insertINTOusers, values, (err, user) => {
+            if (err) {
+                return res.status(400).json('incorrect form submission');
+            }
+            res.json(user.rows[0])
+        })
         await db.query('COMMIT')
     } catch (e) {
         await db.query('ROLLBACK')
