@@ -29,7 +29,7 @@ db.connect()
 
 
 app.get('/', (req, res)=> {
-    res.send('This is working!!!');
+    res.send('This is working with db!!!');
 })
 
 app.post('/signin', (req, res) => {handleSignin(req, res, db, bcrypt)})
