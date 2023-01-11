@@ -15,14 +15,13 @@ const handleSignin = (req, res, db, bcrypt)=> {
     }
 
     db.query(query1, (err, data) => {
-        if (err) throw err;
+        if (err) res.status(400).json("unable to read from database")
         const isValid = bcrypt.compareSync(password, data.rows[0].hash);
         if (isValid) {
             return db.query(query2, (err, user) => {
                 if (err) throw err;
                 res.json(user.rows[0])
             })
-            .catch(err => res.status(400).json('unable to get user'))
         }else {
             res.status(400).json(data.rows[0].hash)
         }
