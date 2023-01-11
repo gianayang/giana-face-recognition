@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
 import cors from 'cors';
-import knex from 'knex';
+import { Client } from 'pg';
 import {handleRegister} from './controllers/register.js';
 import {handleSignin} from './controllers/signin.js';
 
@@ -10,15 +10,23 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-const db = knex({
-    client: 'pg',
-    connection: {
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
+// const db = knex({
+//     client: 'pg',
+//     connection: {
+//         connectionString: process.env.DATABASE_URL,
+//         ssl: {
+//             rejectUnauthorized: false
+//         }
+//     }
+// });
+const db = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl:{
+        rejectUnauthorized: false
     }
-});
+})
+db.connect()
+
 
 app.get('/', (req, res)=> {
     res.send('This is working!!!');
