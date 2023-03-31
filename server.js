@@ -53,7 +53,7 @@ app.put('/image', (req, res) => {
     }
     db.query(incrementQuery, (err, entries) => {
         if (err) res.status(400).json("cannot update entries")
-        res.json(entries[0].entries)
+        res.json(entries.rows[0].entries)
     })
 })
 
